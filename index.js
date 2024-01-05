@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import { Staff } from "./models/users.js";
 
 const app = express();
 app.use(cors());
