@@ -1,12 +1,23 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import { Staff } from "./models/users.js";
+
+// importing Apis now
+import {loginUser} from "./login/login.js";
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 const port = 8080;
 const mongoURL = "mongodb://localhost:27017/appraisalDB"
+
+//main api calls
+
+app.post('/api/loginUser',(req,res)=>{
+    loginUser(req,res);
+});
+
+// server set up
 
 mongoose.connect(mongoURL)
 .then(()=>{
