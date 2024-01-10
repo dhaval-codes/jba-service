@@ -1,5 +1,4 @@
 import { Staff } from "../models/users.js";
-import axios from "axios";
 
 export const loginUser = async (req, res) => {
    try{

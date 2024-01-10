@@ -4,6 +4,7 @@ import cors from "cors";
 
 // importing Apis now
 import {loginUser} from "./login/login.js";
+import { getRandomFact } from "./facts/facts.js";
 
 const app = express();
 app.use(cors());
@@ -16,6 +17,9 @@ const mongoURL = "mongodb://localhost:27017/appraisalDB"
 app.post('/api/loginUser',(req,res)=>{
     loginUser(req,res);
 });
+app.get('/api/facts',(req,res)=>{
+    getRandomFact(req,res);
+})
 
 // server set up
 
