@@ -28,5 +28,5 @@ mongoose.connect(mongoURL)
 })
 
 app.listen(port,()=>{
-    console.log(`Backend is listening on ${port} successfully`)
+    console.log(`Magic happens on ${port} port`)
 })
