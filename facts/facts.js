@@ -12,7 +12,7 @@ export const getRandomFact = async (req, res) => {
         return res.status(404).json({ message: 'Fact not found' });
       }
   
-      res.status(200).json(randomFact);
+      res.send(randomFact);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server Error' });

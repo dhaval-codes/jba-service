@@ -5,6 +5,8 @@ import cors from "cors";
 // importing Apis now
 import {loginUser} from "./login/login.js";
 import { getRandomFact } from "./facts/facts.js";
+import { sideBarFormMetaDeta } from "./routes/sidebar/sidebarMetaDeta.js";
+import { sidebarColorDetails } from "./routes/sidebar/colorData.js";
 
 const app = express();
 app.use(cors());
@@ -19,6 +21,12 @@ app.post('/api/loginUser',(req,res)=>{
 });
 app.get('/api/facts',(req,res)=>{
     getRandomFact(req,res);
+});
+app.get('/api/sideBarFormData',(req,res)=>{
+    sideBarFormMetaDeta(req, res);
+});
+app.get('/api/sidebarColorDetails',(req,res)=>{
+    sidebarColorDetails(req,res);
 })
 
 // server set up
