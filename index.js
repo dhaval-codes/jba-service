@@ -7,6 +7,7 @@ import {loginUser} from "./login/login.js";
 import { getRandomFact } from "./facts/facts.js";
 import { sideBarFormMetaDeta } from "./routes/sidebar/sidebarMetaDeta.js";
 import { sidebarColorDetails } from "./routes/sidebar/colorData.js";
+import { formDataSend } from "./routes/forms/formDataSend.js";
 
 const app = express();
 app.use(cors());
@@ -27,6 +28,9 @@ app.get('/api/sideBarFormData',(req,res)=>{
 });
 app.get('/api/sidebarColorDetails',(req,res)=>{
     sidebarColorDetails(req,res);
+})
+app.post('/api/formData', (req,res)=>{
+    formDataSend(req,res);
 })
 
 // server set up

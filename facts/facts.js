@@ -2,7 +2,7 @@ import { Facts } from "../models/facts.js";
 
 export const getRandomFact = async (req, res) => {
     try {
-      const { factNumber } = req.query;
+      const factNumber = req.query.for;
       const randomFactNumber = parseInt(factNumber);
   
       // Retrieve a random fact based on the 'factNumber'
