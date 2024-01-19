@@ -3,11 +3,12 @@ import mongoose from "mongoose";
 import cors from "cors";
 
 // importing Apis now
-import {loginUser} from "./login/login.js";
+import { loginUser } from "./login/login.js";
 import { getRandomFact } from "./facts/facts.js";
 import { sideBarFormMetaDeta } from "./routes/sidebar/sidebarMetaDeta.js";
 import { sidebarColorDetails } from "./routes/sidebar/colorData.js";
 import { formDataSend } from "./routes/forms/formDataSend.js";
+import { juniorA2Stafflist } from "./routes/juniorA2/sidebarStaffName.js";
 
 const app = express();
 app.use(cors());
@@ -31,6 +32,9 @@ app.get('/api/sidebarColorDetails',(req,res)=>{
 })
 app.post('/api/formData', (req,res)=>{
     formDataSend(req,res);
+})
+app.post('/api/juniorA2/stafflist', (req,res)=>{
+    juniorA2Stafflist(req,res);
 })
 
 // server set up
