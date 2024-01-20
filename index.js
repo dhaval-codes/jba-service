@@ -9,6 +9,7 @@ import { sideBarFormMetaDeta } from "./routes/sidebar/sidebarMetaDeta.js";
 import { sidebarColorDetails } from "./routes/sidebar/colorData.js";
 import { formDataSend } from "./routes/forms/formDataSend.js";
 import { juniorA2Stafflist } from "./routes/juniorA2/sidebarStaffName.js";
+import { sendA1formJunior } from "./routes/juniorA2/sendFormData.js";
 
 const app = express();
 app.use(cors());
@@ -35,6 +36,9 @@ app.post('/api/formData', (req,res)=>{
 })
 app.post('/api/juniorA2/stafflist', (req,res)=>{
     juniorA2Stafflist(req,res);
+})
+app.get('/api/juniorA2/formData', (req,res)=>{
+    sendA1formJunior(req,res);
 })
 
 // server set up
