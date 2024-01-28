@@ -11,6 +11,7 @@ import { formDataSend } from "./routes/forms/formDataSend.js";
 import { juniorA2Stafflist } from "./routes/juniorA2/sidebarStaffName.js";
 import { sendA1formJunior } from "./routes/juniorA2/sendFormData.js";
 import { staffListAdminFunc } from "./routes/admin/employeeList.js";
+import { checkPasswordFunc } from "./routes/password/changePassword.js";
 
 const app = express();
 app.use(cors());
@@ -44,6 +45,9 @@ app.get('/api/juniorA2/formData', (req,res)=>{
 app.post('/api/admin/employeeList', (req,res)=>{
     staffListAdminFunc(req,res)
 })
+app.post(`/api/setPassword`, (req,res)=>{
+    checkPasswordFunc(req,res)
+})
 
 // server set up
 
@@ -54,7 +58,6 @@ mongoose.connect(mongoURL)
 .catch((err)=>{
     console.log("Error in connection: ", err)
 })
-
 app.listen(port,()=>{
     console.log(`Magic happens on ${port} port`)
 })
