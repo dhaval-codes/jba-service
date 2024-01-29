@@ -14,6 +14,9 @@ import { staffListAdminFunc } from "./routes/admin/employeeList.js";
 import { checkPasswordFunc } from "./routes/password/changePassword.js";
 import { setPasswordFunc } from "./routes/password/setPassword.js";
 
+// import of test API function
+import { testFunc } from "./test/test.js";
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -51,6 +54,11 @@ app.post(`/api/setPassword`, (req,res)=>{
 })
 app.post('/api/applyChangedPassword', (req,res)=>{
     setPasswordFunc(req,res);
+})
+
+// test API call
+app.post('/api/test', (req,res)=>{
+    testFunc(req,res)
 })
 
 // server set up
