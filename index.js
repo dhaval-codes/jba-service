@@ -12,6 +12,7 @@ import { juniorA2Stafflist } from "./routes/juniorA2/sidebarStaffName.js";
 import { sendA1formJunior } from "./routes/juniorA2/sendFormData.js";
 import { staffListAdminFunc } from "./routes/admin/employeeList.js";
 import { checkPasswordFunc } from "./routes/password/changePassword.js";
+import { setPasswordFunc } from "./routes/password/setPassword.js";
 
 const app = express();
 app.use(cors());
@@ -43,10 +44,13 @@ app.get('/api/juniorA2/formData', (req,res)=>{
     sendA1formJunior(req,res);
 })
 app.post('/api/admin/employeeList', (req,res)=>{
-    staffListAdminFunc(req,res)
+    staffListAdminFunc(req,res);
 })
 app.post(`/api/setPassword`, (req,res)=>{
-    checkPasswordFunc(req,res)
+    checkPasswordFunc(req,res);
+})
+app.post('/api/applyChangedPassword', (req,res)=>{
+    setPasswordFunc(req,res);
 })
 
 // server set up
