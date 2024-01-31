@@ -13,6 +13,7 @@ import { sendA1formJunior } from "./routes/juniorA2/sendFormData.js";
 import { staffListAdminFunc } from "./routes/admin/employeeList.js";
 import { checkPasswordFunc } from "./routes/password/changePassword.js";
 import { setPasswordFunc } from "./routes/password/setPassword.js";
+import { recieveFormData } from "./routes/forms/submitForm.js";
 
 // import of test API function
 import { testFunc } from "./test/test.js";
@@ -54,6 +55,9 @@ app.post(`/api/setPassword`, (req,res)=>{
 })
 app.post('/api/applyChangedPassword', (req,res)=>{
     setPasswordFunc(req,res);
+})
+app.post('/api/submitForm',(req,res)=>{
+    recieveFormData(req,res);
 })
 
 // test API call
