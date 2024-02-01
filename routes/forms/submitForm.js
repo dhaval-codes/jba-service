@@ -44,7 +44,9 @@ export const recieveFormData = async (req,res)=> {
             }
             // Pushing to the DB
             const savedData = await FilledForm.create(pushingObj)
-            res.send(savedData.__v)            
+            if(savedData){
+                res.send('submited')
+            }           
         } else if (formName === 'Appraisal Form C') {
             const completeFormData = await FormC.findOne({name: formName})
             const quesAnsArray = completeFormData.arrayData;
@@ -68,10 +70,12 @@ export const recieveFormData = async (req,res)=> {
             }
             // Pushing to the DB
             const savedData = await FilledForm.create(pushingObj)
-            res.send(savedData.__v)   
+            if(savedData){
+                res.send('submited')
+            }  
         }
     } catch (e) {
         console.log(e)
-        res.send(1)
+        res.send('')
     }
 }
