@@ -3,6 +3,7 @@ import { FormC } from "../../models/formC.js";
 import { FilledForm } from "../../models/filledForm.js";
 import { departmentWiseFormType } from "../../utils/department-formSelector.js";
 import { extractMonthAndYear } from "../../utils/extractDate.js";
+import { applicantsDepartmentFinder } from "../../utils/applicantsDepartmentFinder.js";
 
 export const recieveFormData = async (req,res)=> {
     try{
@@ -17,13 +18,15 @@ export const recieveFormData = async (req,res)=> {
             filledData
         } = req.body;
 
+        const myApplicantsDepartment = await applicantsDepartmentFinder(applicantsName)
+
         const {month, year} = extractMonthAndYear(timePeriod)
-        // console.log(applicantsName)
         // processing form data to make array of objects
         if(formName === 'Appraisal Form A1') {
             const fetchingDepartmentName = departmentWiseFormType(applicantsDepartment)
             const completeFormData = await FormA1.findOne({for: fetchingDepartmentName})
             const quesAnsArray = completeFormData.formData;
+           
             // treating form data
             const DraftData = [];
             for(let i=0; i<quesAnsArray.length; i++){
@@ -35,7 +38,7 @@ export const recieveFormData = async (req,res)=> {
                 filledBy: filledBy,
                 applicantsName: applicantsName ? applicantsName : filledBy,
                 fillersDesignation: fillersDesignation,
-                applicantsDepartment: applicantsDepartment,
+                applicantsDepartment: myApplicantsDepartment,
                 timePeriod: {
                     month: month,
                     year: year
@@ -61,7 +64,7 @@ export const recieveFormData = async (req,res)=> {
                 filledBy: filledBy,
                 applicantsName: applicantsName ? applicantsName : filledBy,
                 fillersDesignation: fillersDesignation,
-                applicantsDepartment: applicantsDepartment,
+                applicantsDepartment: myApplicantsDepartment,
                 timePeriod: {
                     month: month,
                     year: year
