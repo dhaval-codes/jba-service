@@ -43,7 +43,7 @@ export const recieveFormData = async (req,res)=> {
                     month: month,
                     year: year
                 },
-                filledData: DraftData
+                filledData: DraftData,
             }
             // Pushing to the DB
             const savedData = await FilledForm.create(pushingObj)
