@@ -1,57 +1,40 @@
 import { FilledForm } from "../../models/filledForm.js"
-import { FormA1 } from "../../models/formA1.js"
-import { departmentWiseFormType } from "../../utils/department-formSelector.js"
-import { GetStaffCodeFunc } from "../../utils/getStaffCodeFunc.js"
 
 export const getTopEmployees = async (req,res) => {
     try{
-        const send = req.body.send
+        const send = req.body.send;
         if(send === 'Admin'){
-            const allFilledData = await FilledForm.find({name: 'Appraisal Form A1'})
-            let anotherArray = [];
-            await Promise.all(allFilledData.map(async (item) => {
-                let filledArray = item.filledData.map(obj => Object.values(obj)[0]);
-                let department = item.applicantsDepartment;
-                let checkDepartment = departmentWiseFormType(department);
-                let Form = await FormA1.findOne({ for: checkDepartment });
-                let maxRating = Form.formData[0].options.length;
-                let name = item.applicantsName;
-                let totalNumber = filledArray.reduce((total, num) => total + num, 0);
-                let fraction = ((totalNumber / filledArray.length) / maxRating) * 5;
-                anotherArray.push({ name: name, department: department, fracArray: fraction });
-            }));
-            
-            // Reducing to just distinguished names objects
-            const groupedData = anotherArray.reduce((acc, curr) => {
-                if (!acc[curr.name]) {
-                    acc[curr.name] = { name: curr.name, department: curr.department, fracArraySum: curr.fracArray, count: 1 };
-                } else {
-                    acc[curr.name].fracArraySum += curr.fracArray;
-                    acc[curr.name].count++;
+            let draftArray1 = []
+            const allFilledFormData = await FilledForm.find()
+            allFilledFormData.map((item)=>{
+                draftArray1.push(
+                    {
+                        name: item.applicantsName,
+                        department: item.applicantsDepartment,
+                        staffCode: item.applicantsStaffCode,
+                        semiMarks: item.cumalativeMarks
+                    }
+                )
+            })
+            const filteredArray = Object.values(draftArray1.reduce((acc, obj) => {
+                const key = obj.staffCode;
+                if (!acc[key]) {
+                    acc[key] = { staffCode: key, totalSemiMarks: 0, count: 0, marks: 0, name: obj.name, department: obj.department };
                 }
-                return acc;
-            }, {});
-            
-            // Calculate the average fracArray for each group and form the array with unique names and details
-            const uniqueNamesArray = Object.values(groupedData).map(async (item) => {
-                const staffCode = await GetStaffCodeFunc(item.name); // Fetch staff code for the employee
-                return {
-                    name: item.name,
-                    department: item.department,
-                    staffCode: staffCode, // Include staff code in the response
-                    averageFracArray: item.fracArraySum / item.count
-                };
+                acc[key].totalSemiMarks += obj.semiMarks;
+                acc[key].count++;
+                acc[key].marks = acc[key].totalSemiMarks / acc[key].count;
+                return acc; // Return the accumulator
+            }, {}));  
+            filteredArray.sort((a,b)=> b.marks - a.marks);
+            const descendingFilteredArray = filteredArray.map(item => {
+                item.marks = item.marks.toFixed(2)
+                delete item.totalSemiMarks;
+                delete item.count;
+                return item;
             });
-
-            // Just picking top3 from the array on behalf of total marks
-            const sortedUniqueNamesArray = await Promise.all(uniqueNamesArray);
-            sortedUniqueNamesArray.sort((a, b) => b.averageFracArray - a.averageFracArray);
-            const top3Rankers = sortedUniqueNamesArray.slice(0, 3).map((obj, index) => ({
-                ...obj,
-                averageFracArray: obj.averageFracArray.toFixed(2),
-                medal: index === 0 ? 'gold' : index === 1 ? 'silver' : 'bronz'
-            }));  
-            res.send(top3Rankers)      
+            const top3Employees = descendingFilteredArray.slice(0, 3);
+            res.send(top3Employees)
         }
     } catch (e) {
         console.log(e)
