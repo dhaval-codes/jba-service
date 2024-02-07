@@ -8,7 +8,10 @@ const filledForm = new Schema({
     fillersDesignation: {type: String, required: true},
     applicantsDepartment: {type: String, required: true},
     timePeriod: {type: Object, required: true},
-    filledData: {type: Array, required: true}
+    filledData: {type: Array, required: true},
+    applicantsStaffCode: {type: Number, required: true},
+    filledDataMarksArray: {type: Array, required: false},
+    cumalativeMarks: {type: Number, required: false}
 })
 
 export const FilledForm = mongoose.model("FilledForm", filledForm);

@@ -9,7 +9,7 @@ export const juniorA2Stafflist = async (req, res) => {
             let details = await Staff.find({$and: [{role: checkRole},{department: department}]}).select({ password: 0, department: 0 });
             res.send(details)
         } else if ( role === 'Co-ordinator') {
-            let details = await Staff.find({role: checkRole}).select({password:0, staffCode:0})
+            let details = await Staff.find({role: checkRole}).select({password:0})
             res.send(details)
         }
     } catch (e) {

@@ -4,6 +4,7 @@ import { FilledForm } from "../../models/filledForm.js";
 import { departmentWiseFormType } from "../../utils/department-formSelector.js";
 import { extractMonthAndYear } from "../../utils/extractDate.js";
 import { applicantsDepartmentFinder } from "../../utils/applicantsDepartmentFinder.js";
+import { convertToFractionalValue } from "../../utils/fractionalConverter.js";
 
 export const recieveFormData = async (req,res)=> {
     try{
@@ -13,6 +14,7 @@ export const recieveFormData = async (req,res)=> {
             filledBy,
             applicantsName,
             fillersDesignation,
+            applicantsStaffCode,
             applicantsDepartment,
             timePeriod,
             filledData
@@ -26,6 +28,7 @@ export const recieveFormData = async (req,res)=> {
             const fetchingDepartmentName = departmentWiseFormType(applicantsDepartment)
             const completeFormData = await FormA1.findOne({for: fetchingDepartmentName})
             const quesAnsArray = completeFormData.formData;
+            const passingLength = quesAnsArray[0].options.length
            
             // treating form data
             const DraftData = [];
@@ -44,6 +47,9 @@ export const recieveFormData = async (req,res)=> {
                     year: year
                 },
                 filledData: DraftData,
+                applicantsStaffCode: applicantsStaffCode,
+                filledDataMarksArray: filledData,
+                cumalativeMarks: convertToFractionalValue(filledData,passingLength)
             }
             // Pushing to the DB
             const savedData = await FilledForm.create(pushingObj)
@@ -69,7 +75,8 @@ export const recieveFormData = async (req,res)=> {
                     month: month,
                     year: year
                 },
-                filledData: DraftData
+                filledData: DraftData,
+                applicantsStaffCode: applicantsStaffCode
             }
             // Pushing to the DB
             const savedData = await FilledForm.create(pushingObj)

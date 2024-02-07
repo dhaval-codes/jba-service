@@ -14,7 +14,7 @@ export const formDataSend = async (req,res) => {
             [
                 {filledBy:name},
                 {"timePeriod.year":year} ,
-                {applicantsName:name}
+                {applicantsName:name},
             ]})
         if(availableData.length === 0){
             const Senior = seniorFinder(role);

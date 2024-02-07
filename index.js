@@ -15,6 +15,7 @@ import { checkPasswordFunc } from "./routes/password/changePassword.js";
 import { setPasswordFunc } from "./routes/password/setPassword.js";
 import { recieveFormData } from "./routes/forms/submitForm.js";
 import { getTopEmployees } from "./routes/admin/sendTopEmployees.js";
+import { sendAdminBarChartData } from "./routes/admin/sendBarData.js";
 
 // import of test API function
 import { testFunc } from "./test/test.js";
@@ -62,6 +63,9 @@ app.post('/api/submitForm',(req,res)=>{
 })
 app.post('/api/admin/getTopEmployees', (req,res)=>{
     getTopEmployees(req,res)
+})
+app.post('/api/admin/getBarData', (req,res)=>{
+    sendAdminBarChartData(req,res)
 })
 
 // test API call

@@ -6,10 +6,10 @@ import { GetStaffCodeFunc } from "../../utils/getStaffCodeFunc.js"
 export const getTopEmployees = async (req,res) => {
     try{
         const send = req.body.send
-        if(send){
+        if(send === 'Admin'){
             const allFilledData = await FilledForm.find({name: 'Appraisal Form A1'})
             let anotherArray = [];
-            await Promise.all(allFilledData.map(async (item, i) => {
+            await Promise.all(allFilledData.map(async (item) => {
                 let filledArray = item.filledData.map(obj => Object.values(obj)[0]);
                 let department = item.applicantsDepartment;
                 let checkDepartment = departmentWiseFormType(department);
@@ -21,6 +21,7 @@ export const getTopEmployees = async (req,res) => {
                 anotherArray.push({ name: name, department: department, fracArray: fraction });
             }));
             
+            // Reducing to just distinguished names objects
             const groupedData = anotherArray.reduce((acc, curr) => {
                 if (!acc[curr.name]) {
                     acc[curr.name] = { name: curr.name, department: curr.department, fracArraySum: curr.fracArray, count: 1 };
@@ -41,6 +42,8 @@ export const getTopEmployees = async (req,res) => {
                     averageFracArray: item.fracArraySum / item.count
                 };
             });
+
+            // Just picking top3 from the array on behalf of total marks
             const sortedUniqueNamesArray = await Promise.all(uniqueNamesArray);
             sortedUniqueNamesArray.sort((a, b) => b.averageFracArray - a.averageFracArray);
             const top3Rankers = sortedUniqueNamesArray.slice(0, 3).map((obj, index) => ({
@@ -48,7 +51,6 @@ export const getTopEmployees = async (req,res) => {
                 averageFracArray: obj.averageFracArray.toFixed(2),
                 medal: index === 0 ? 'gold' : index === 1 ? 'silver' : 'bronz'
             }));  
-            console.log(top3Rankers)
             res.send(top3Rankers)      
         }
     } catch (e) {
