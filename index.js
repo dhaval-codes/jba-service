@@ -50,9 +50,6 @@ app.post('/api/juniorA2/stafflist', (req,res)=>{
 app.get('/api/juniorA2/formData', (req,res)=>{
     sendA1formJunior(req,res);
 })
-app.post('/api/admin/employeeList', (req,res)=>{
-    staffListAdminFunc(req,res);
-})
 app.post(`/api/setPassword`, (req,res)=>{
     checkPasswordFunc(req,res);
 })
@@ -70,6 +67,9 @@ app.post('/api/admin/getBarData', (req,res)=>{
 })
 app.post('/api/admin/getfilledCForm', (req,res)=>{
     sendFilledCForm(req,res)
+})
+app.post('/api/admin/getTableData',(req,res)=>{
+    staffListAdminFunc(req,res)
 })
 
 // test API call
