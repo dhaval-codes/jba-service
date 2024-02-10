@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { FilledForm } from "../../models/filledForm.js"
 
 export const sendAdminBarChartData = async (req,res) =>{
@@ -8,6 +7,9 @@ export const sendAdminBarChartData = async (req,res) =>{
             let Querry;
             if(dept && year){
                 Querry = await FilledForm.find({$and:[
+                    {
+                        name: 'Appraisal Form A1'
+                    },
                     {
                         applicantsDepartment: dept
                     },
@@ -20,7 +22,9 @@ export const sendAdminBarChartData = async (req,res) =>{
             } else if (dept){
                 Querry = await FilledForm.find({applicantsDepartment: dept})
             } else {
-                Querry = await FilledForm.find()
+                Querry = await FilledForm.find({
+                    name: 'Appraisal Form A1'
+                },)
                 let total = 0
                 Querry.map((item)=>{
                     total = total + item.cumalativeMarks
