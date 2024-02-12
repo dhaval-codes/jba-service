@@ -20,6 +20,7 @@ import { sendFilledCForm } from "./routes/admin/sendPeerAppraisalCFilledForms.js
 
 // import of test API function
 import { testFunc } from "./test/test.js";
+import { getDepartments } from "./routes/admin/sendDepartments.js";
 
 const app = express();
 app.use(cors());
@@ -71,6 +72,9 @@ app.post('/api/admin/getfilledCForm', (req,res)=>{
 app.post('/api/admin/getTableData',(req,res)=>{
     staffListAdminFunc(req,res)
 })
+app.get('/api/admin/getAllDepartments', (req,res)=>(
+    getDepartments(req,res)
+))
 
 // test API call
 app.post('/api/test', (req,res)=>{

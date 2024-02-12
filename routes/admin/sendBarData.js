@@ -5,7 +5,7 @@ export const sendAdminBarChartData = async (req,res) =>{
         const {role, dept, year} = req.body;
         if (role === 'Admin') {
             let Querry;
-            if(dept && year){
+            if(dept !== "" && year !== ""){
                 Querry = await FilledForm.find({$and:[
                     {
                         name: 'Appraisal Form A1'
@@ -17,9 +17,43 @@ export const sendAdminBarChartData = async (req,res) =>{
                         "timePeriod.year": year
                     }
                 ]});
-            } else if (year){
+                let totalCumalative = 0;
+                Querry.map((item)=>{
+                    totalCumalative = totalCumalative + item.cumalativeMarks
+                })
+                const DepartmentAVG = totalCumalative/Querry.length
+
+                const DraftObject = {};
+                Querry.forEach(staff =>{
+                    if (!DraftObject[staff.applicantsName]) {
+                        DraftObject[staff.applicantsName] = { totalMarks: 0, count: 0 };
+                      }
+                      DraftObject[staff.applicantsName].totalMarks += staff.cumalativeMarks;
+                      DraftObject[staff.applicantsName].count++;
+                })
+
+                const sendingArray = [];
+
+                // Iterate over nameData object to calculate average marks and push to avgMarksArray
+                for (const name in DraftObject) {
+                const avgMarks = DraftObject[name].totalMarks / DraftObject[name].count;
+                sendingArray.push({ name: name, avgMarks: avgMarks });
+                }
+
+                const finalArray = []
+
+                sendingArray.map((item) => {
+                    finalArray.push({
+                        name: item.name,
+                        avg: item.avgMarks.toFixed(2)
+                    });
+                });
+
+                res.send({DepartmentAVG: DepartmentAVG.toFixed(2), staff: finalArray})
+
+            } else if (year !== ""){
                 Querry = await FilledForm.find({"timePeriod.year": year})
-            } else if (dept){
+            } else if (dept !== ""){
                 Querry = await FilledForm.find({applicantsDepartment: dept})
             } else {
                 Querry = await FilledForm.find({
