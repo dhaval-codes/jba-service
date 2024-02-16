@@ -17,6 +17,7 @@ import { recieveFormData } from "./routes/forms/submitForm.js";
 import { getTopEmployees } from "./routes/admin/sendTopEmployees.js";
 import { sendAdminBarChartData } from "./routes/admin/sendBarData.js";
 import { sendFilledCForm } from "./routes/admin/sendPeerAppraisalCFilledForms.js";
+import { sendDownloadData } from "./routes/admin/sendPDFDownloadData.js";
 
 // import of test API function
 import { testFunc } from "./test/test.js";
@@ -75,6 +76,9 @@ app.post('/api/admin/getTableData',(req,res)=>{
 app.get('/api/admin/getAllDepartments', (req,res)=>(
     getDepartments(req,res)
 ))
+app.post('/api/admin/getDownloadPDFdata',(req,res)=>{
+    sendDownloadData(req,res)
+})
 
 // test API call
 app.post('/api/test', (req,res)=>{
