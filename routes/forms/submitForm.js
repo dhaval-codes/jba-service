@@ -29,6 +29,15 @@ export const recieveFormData = async (req,res)=> {
             const completeFormData = await FormA1.findOne({for: fetchingDepartmentName})
             const quesAnsArray = completeFormData.formData;
             const passingLength = quesAnsArray[0].options.length
+
+            let MyArray = []
+            for(let i = 0; i < quesAnsArray.length; i++){
+                MyArray.push({
+                    ques: quesAnsArray[i].ques,
+                    selectedAns: quesAnsArray[i].options[filledData[i]],
+                    selectedNumber: filledData[i] + 1
+                });
+            }
            
             // treating form data
             const DraftData = [];
@@ -48,7 +57,7 @@ export const recieveFormData = async (req,res)=> {
                 },
                 filledData: DraftData,
                 applicantsStaffCode: applicantsStaffCode,
-                filledDataMarksArray: filledData,
+                filledDataMarksArray: MyArray,
                 cumalativeMarks: convertToFractionalValue(filledData,passingLength)
             }
             // Pushing to the DB
