@@ -5,7 +5,7 @@ export const getTopEmployees = async (req,res) => {
         const send = req.body.send;
         if(send === 'Admin'){
             let draftArray1 = []
-            const allFilledFormData = await FilledForm.find()
+            const allFilledFormData = await FilledForm.find({name:'Appraisal Form A1'})
             allFilledFormData.map((item)=>{
                 draftArray1.push(
                     {
@@ -16,6 +16,7 @@ export const getTopEmployees = async (req,res) => {
                     }
                 )
             })
+
             const filteredArray = Object.values(draftArray1.reduce((acc, obj) => {
                 const key = obj.staffCode;
                 if (!acc[key]) {
@@ -35,6 +36,7 @@ export const getTopEmployees = async (req,res) => {
             });
             const top3Employees = descendingFilteredArray.slice(0, 3);
             res.send(top3Employees)
+
         }
     } catch (e) {
         console.log(e)

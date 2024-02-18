@@ -118,61 +118,114 @@ export const sendAdminBarChartData = async (req,res) =>{
 
                 res.send(SendingObj)
             } else if (dept !== "" && year !== ""){
-                Querry = await FilledForm.find({$and:[
-                    {
-                        name: 'Appraisal Form A1'
-                    },
-                    {
-                        applicantsDepartment: dept
-                    },
-                    {
-                        "timePeriod.year": year
+                if(dept !== 'Others') {
+                    Querry = await FilledForm.find({$and:[
+                        {
+                            name: 'Appraisal Form A1'
+                        },
+                        {
+                            applicantsDepartment: dept
+                        },
+                        {
+                            "timePeriod.year": year
+                        }
+                    ]});
+                    let totalCumalative = 0;
+                    Querry.map((item)=>{
+                        totalCumalative = totalCumalative + item.cumalativeMarks
+                    })
+                    const DepartmentAVG = totalCumalative/Querry.length
+                    const Draft1 = DepartmentAVG.toFixed(2)
+    
+                    const DraftObject = {};
+                    Querry.forEach(staff =>{
+                        if (!DraftObject[staff.applicantsName]) {
+                            DraftObject[staff.applicantsName] = { totalMarks: 0, count: 0 };
+                          }
+                          DraftObject[staff.applicantsName].totalMarks += staff.cumalativeMarks;
+                          DraftObject[staff.applicantsName].count++;
+                    })
+    
+                    const sendingArray = [];
+    
+                    // Iterate over nameData object to calculate average marks and push to avgMarksArray
+                    for (const name in DraftObject) {
+                    const avgMarks = DraftObject[name].totalMarks / DraftObject[name].count;
+                    sendingArray.push({ name: name, avgMarks: avgMarks });
                     }
-                ]});
-                let totalCumalative = 0;
-                Querry.map((item)=>{
-                    totalCumalative = totalCumalative + item.cumalativeMarks
-                })
-                const DepartmentAVG = totalCumalative/Querry.length
-                const Draft1 = DepartmentAVG.toFixed(2)
-
-                const DraftObject = {};
-                Querry.forEach(staff =>{
-                    if (!DraftObject[staff.applicantsName]) {
-                        DraftObject[staff.applicantsName] = { totalMarks: 0, count: 0 };
-                      }
-                      DraftObject[staff.applicantsName].totalMarks += staff.cumalativeMarks;
-                      DraftObject[staff.applicantsName].count++;
-                })
-
-                const sendingArray = [];
-
-                // Iterate over nameData object to calculate average marks and push to avgMarksArray
-                for (const name in DraftObject) {
-                const avgMarks = DraftObject[name].totalMarks / DraftObject[name].count;
-                sendingArray.push({ name: name, avgMarks: avgMarks });
+    
+                    const finalArray = []
+                    const namesArray = []
+    
+                    sendingArray.map((item) => {
+                        finalArray.push(                        
+                            item.avgMarks.toFixed(2)
+                        );
+                        namesArray.push(item.name.split(' ')[0]);
+                    });
+    
+                    res.send(
+                        {
+                            averageArray: Array(finalArray.length).fill(Draft1),
+                            indiArray: finalArray,
+                            firstName: 'Staff Rating',
+                            labels: namesArray,
+                            secondName: 'Department Avg'
+                        }
+                    )
+                } else if (dept === 'Others') {
+                    const excudedDept = ['english','hindi','maths','science','cs','commerce','humanities','psycology','pe','perArts']
+                    Querry = await FilledForm.find({
+                        $and: [
+                            { name: 'Appraisal Form A1' },
+                            { applicantsDepartment: { $nin: excudedDept } },
+                            { "timePeriod.year": year }
+                        ]
+                    });
+                    let totalCumalative = 0;
+                    Querry.map((item)=>{
+                        totalCumalative = totalCumalative + item.cumalativeMarks
+                    })
+                    const DepartmentAVG = totalCumalative/Querry.length
+                    const Draft1 = DepartmentAVG.toFixed(2)
+    
+                    const DraftObject = {};
+                    Querry.forEach(staff =>{
+                        if (!DraftObject[staff.applicantsName]) {
+                            DraftObject[staff.applicantsName] = { totalMarks: 0, count: 0 };
+                          }
+                          DraftObject[staff.applicantsName].totalMarks += staff.cumalativeMarks;
+                          DraftObject[staff.applicantsName].count++;
+                    })
+    
+                    const sendingArray = [];
+    
+                    // Iterate over nameData object to calculate average marks and push to avgMarksArray
+                    for (const name in DraftObject) {
+                    const avgMarks = DraftObject[name].totalMarks / DraftObject[name].count;
+                    sendingArray.push({ name: name, avgMarks: avgMarks });
+                    }
+    
+                    const finalArray = []
+                    const namesArray = []
+    
+                    sendingArray.map((item) => {
+                        finalArray.push(                        
+                            item.avgMarks.toFixed(2)
+                        );
+                        namesArray.push(item.name.split(' ')[0]);
+                    });
+    
+                    res.send(
+                        {
+                            averageArray: Array(finalArray.length).fill(Draft1),
+                            indiArray: finalArray,
+                            firstName: 'Staff Rating',
+                            labels: namesArray,
+                            secondName: 'Department Avg'
+                        }
+                    )
                 }
-
-                const finalArray = []
-                const namesArray = []
-
-                sendingArray.map((item) => {
-                    finalArray.push(                        
-                        item.avgMarks.toFixed(2)
-                    );
-                    namesArray.push(item.name.split(' ')[0]);
-                });
-
-                res.send(
-                    {
-                        averageArray: Array(finalArray.length).fill(Draft1),
-                        indiArray: finalArray,
-                        firstName: 'Staff Rating',
-                        labels: namesArray,
-                        secondName: 'Department Avg'
-                    }
-                )
-
             } else if (year !== ""){
                 Querry = await FilledForm.find({$and:[{name: 'Appraisal Form A1'},{"timePeriod.year": year}]})
                 let total = 0
@@ -284,50 +337,103 @@ export const sendAdminBarChartData = async (req,res) =>{
 
                 res.send(SendingObj)
             } else if (dept !== ""){
-                Querry = await FilledForm.find({$and:[{name: 'Appraisal Form A1'},{applicantsDepartment: dept}]})
-                let totalCumalative = 0;
-                Querry.map((item)=>{
-                    totalCumalative = totalCumalative + item.cumalativeMarks
-                })
-                const DepartmentAVG = totalCumalative/Querry.length
-                const Draft1 = DepartmentAVG.toFixed(2)
+                if(dept !== 'Others'){
+                    Querry = await FilledForm.find({$and:[{name: 'Appraisal Form A1'},{applicantsDepartment: dept}]})
+                    let totalCumalative = 0;
+                    Querry.map((item)=>{
+                        totalCumalative = totalCumalative + item.cumalativeMarks
+                    })
+                    const DepartmentAVG = totalCumalative/Querry.length
+                    const Draft1 = DepartmentAVG.toFixed(2)
 
-                const DraftObject = {};
-                Querry.forEach(staff =>{
-                    if (!DraftObject[staff.applicantsName]) {
-                        DraftObject[staff.applicantsName] = { totalMarks: 0, count: 0 };
-                      }
-                      DraftObject[staff.applicantsName].totalMarks += staff.cumalativeMarks;
-                      DraftObject[staff.applicantsName].count++;
-                })
+                    const DraftObject = {};
+                    Querry.forEach(staff =>{
+                        if (!DraftObject[staff.applicantsName]) {
+                            DraftObject[staff.applicantsName] = { totalMarks: 0, count: 0 };
+                        }
+                        DraftObject[staff.applicantsName].totalMarks += staff.cumalativeMarks;
+                        DraftObject[staff.applicantsName].count++;
+                    })
 
-                const sendingArray = [];
+                    const sendingArray = [];
 
-                // Iterate over nameData object to calculate average marks and push to avgMarksArray
-                for (const name in DraftObject) {
-                const avgMarks = DraftObject[name].totalMarks / DraftObject[name].count;
-                sendingArray.push({ name: name, avgMarks: avgMarks });
-                }
-
-                const finalArray = []
-                const namesArray = []
-
-                sendingArray.map((item) => {
-                    finalArray.push(                        
-                        item.avgMarks.toFixed(2)
-                    );
-                    namesArray.push(item.name.split(' ')[0]);
-                });
-
-                res.send(
-                    {
-                        averageArray: Array(finalArray.length).fill(Draft1),
-                        indiArray: finalArray,
-                        firstName: 'Staff Rating',
-                        labels: namesArray,
-                        secondName: 'Department Avg'
+                    // Iterate over nameData object to calculate average marks and push to avgMarksArray
+                    for (const name in DraftObject) {
+                    const avgMarks = DraftObject[name].totalMarks / DraftObject[name].count;
+                    sendingArray.push({ name: name, avgMarks: avgMarks });
                     }
-                )
+
+                    const finalArray = []
+                    const namesArray = []
+
+                    sendingArray.map((item) => {
+                        finalArray.push(                        
+                            item.avgMarks.toFixed(2)
+                        );
+                        namesArray.push(item.name.split(' ')[0]);
+                    });
+
+                    res.send(
+                        {
+                            averageArray: Array(finalArray.length).fill(Draft1),
+                            indiArray: finalArray,
+                            firstName: 'Staff Rating',
+                            labels: namesArray,
+                            secondName: 'Department Avg'
+                        }
+                    )
+                } else if (dept === 'Others') {
+                    const excudedDept = ['english','hindi','maths','science','cs','commerce','humanities','psycology','pe','perArts']
+                    Querry = await FilledForm.find({
+                        $and: [
+                            { name: 'Appraisal Form A1' },
+                            { applicantsDepartment: { $nin: excudedDept } },
+                        ]
+                    });
+                    let totalCumalative = 0;
+                    Querry.map((item)=>{
+                        totalCumalative = totalCumalative + item.cumalativeMarks
+                    })
+                    const DepartmentAVG = totalCumalative/Querry.length
+                    const Draft1 = DepartmentAVG.toFixed(2)
+
+                    const DraftObject = {};
+                    Querry.forEach(staff =>{
+                        if (!DraftObject[staff.applicantsName]) {
+                            DraftObject[staff.applicantsName] = { totalMarks: 0, count: 0 };
+                        }
+                        DraftObject[staff.applicantsName].totalMarks += staff.cumalativeMarks;
+                        DraftObject[staff.applicantsName].count++;
+                    })
+
+                    const sendingArray = [];
+
+                    // Iterate over nameData object to calculate average marks and push to avgMarksArray
+                    for (const name in DraftObject) {
+                    const avgMarks = DraftObject[name].totalMarks / DraftObject[name].count;
+                    sendingArray.push({ name: name, avgMarks: avgMarks });
+                    }
+
+                    const finalArray = []
+                    const namesArray = []
+
+                    sendingArray.map((item) => {
+                        finalArray.push(                        
+                            item.avgMarks.toFixed(2)
+                        );
+                        namesArray.push(item.name.split(' ')[0]);
+                    });
+
+                    res.send(
+                        {
+                            averageArray: Array(finalArray.length).fill(Draft1),
+                            indiArray: finalArray,
+                            firstName: 'Staff Rating',
+                            labels: namesArray,
+                            secondName: 'Department Avg'
+                        }
+                    )
+                }   
             }   
         } else {
             res.send("Sorry you don't have access to this! Better luck next time")
