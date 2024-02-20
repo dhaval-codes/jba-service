@@ -18,10 +18,12 @@ import { getTopEmployees } from "./routes/admin/sendTopEmployees.js";
 import { sendAdminBarChartData } from "./routes/admin/sendBarData.js";
 import { sendFilledCForm } from "./routes/admin/sendPeerAppraisalCFilledForms.js";
 import { sendDownloadData } from "./routes/admin/sendPDFDownloadData.js";
+import { getDepartments } from "./routes/admin/sendDepartments.js";
+import { addNewEmployeeFunc, checkExistenceFunc } from "./routes/admin/staffManagement.js";
 
 // import of test API function
 import { testFunc } from "./test/test.js";
-import { getDepartments } from "./routes/admin/sendDepartments.js";
+
 
 const app = express();
 app.use(cors());
@@ -73,11 +75,17 @@ app.post('/api/admin/getfilledCForm', (req,res)=>{
 app.post('/api/admin/getTableData',(req,res)=>{
     staffListAdminFunc(req,res)
 })
-app.get('/api/admin/getAllDepartments', (req,res)=>(
+app.get('/api/admin/getAllDepartments', (req,res)=>{
     getDepartments(req,res)
-))
+})
 app.post('/api/admin/getDownloadPDFdata',(req,res)=>{
     sendDownloadData(req,res)
+})
+app.post('/api/admin/addUser', (req,res)=>{
+    addNewEmployeeFunc(req,res)
+})
+app.post('/api/admin/checkExistence', (req,res)=>{
+    checkExistenceFunc(req,res)
 })
 
 // test API call
