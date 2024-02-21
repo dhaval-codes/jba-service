@@ -19,7 +19,7 @@ import { sendAdminBarChartData } from "./routes/admin/sendBarData.js";
 import { sendFilledCForm } from "./routes/admin/sendPeerAppraisalCFilledForms.js";
 import { sendDownloadData } from "./routes/admin/sendPDFDownloadData.js";
 import { getDepartments } from "./routes/admin/sendDepartments.js";
-import { addNewEmployeeFunc, checkExistenceFunc } from "./routes/admin/staffManagement.js";
+import { addNewEmployeeFunc, checkExistenceFunc, deleteStaffFunc, updateStaffFunc } from "./routes/admin/staffManagement.js";
 
 // import of test API function
 import { testFunc } from "./test/test.js";
@@ -86,6 +86,12 @@ app.post('/api/admin/addUser', (req,res)=>{
 })
 app.post('/api/admin/checkExistence', (req,res)=>{
     checkExistenceFunc(req,res)
+})
+app.put('/api/admin/updateEmployee', (req,res)=>{
+    updateStaffFunc(req,res)
+})
+app.post('/api/admin/deleteProfile', (req,res)=>{
+    deleteStaffFunc(req,res)
 })
 
 // test API call

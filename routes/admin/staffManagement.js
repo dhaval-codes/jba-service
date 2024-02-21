@@ -32,3 +32,46 @@ export const checkExistenceFunc = async (req,res) => {
         console.log(e)
     }
 }
+
+export const updateStaffFunc = async (req,res) => {
+    try{
+        const {globalRole, staffCode, role, department} = req.body;
+        if(globalRole === 'Admin') {
+            const update = req.body;
+            delete update.globalRole;
+            delete update.staffCode;
+            if(role === ''){
+                delete update.role
+            }
+            if(department === ''){
+                delete update.department
+            }
+            // console.log(update)
+            const updatedDocument = await Staff.findOneAndUpdate(
+                { staffCode: staffCode },
+                { $set: update },
+                { new: true }
+            );
+            if(updatedDocument) {
+                res.send(true)
+            }
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export const deleteStaffFunc = async (req,res) => {
+    try{
+        const {globalRole, staffCode} = req.body;
+        if(globalRole === 'Admin'){
+            const deletedDocument = await Staff.findOneAndDelete({ staffCode: staffCode });
+            if(deletedDocument){
+                res.send(true)
+            }
+        }
+
+    } catch (e) {
+        console.log(e)
+    }
+}
