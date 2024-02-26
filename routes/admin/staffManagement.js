@@ -65,9 +65,23 @@ export const deleteStaffFunc = async (req,res) => {
     try{
         const {globalRole, staffCode} = req.body;
         if(globalRole === 'Admin'){
-            const deletedDocument = await Staff.findOneAndDelete({ staffCode: staffCode });
-            if(deletedDocument){
-                res.send(true)
+            const response = await Staff.findOne({staffCode: staffCode})
+            const role = response.role
+            if(role === 'Admin'){
+                const checkingArray = await Staff.find({role: role})
+                if(checkingArray.length > 1){
+                    const deletedDocument = await Staff.findOneAndDelete({ staffCode: staffCode });
+                    if(deletedDocument){
+                        res.send(true)
+                    }
+                } else {
+                    res.send('No')
+                }
+            } else {
+                const deletedDocument = await Staff.findOneAndDelete({ staffCode: staffCode });
+                if(deletedDocument){
+                    res.send(true)
+                }
             }
         }
 
