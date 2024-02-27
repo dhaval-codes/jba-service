@@ -23,6 +23,7 @@ import { addNewEmployeeFunc, checkExistenceFunc, deleteStaffFunc, updateStaffFun
 
 // import of test API function
 import { testFunc } from "./test/test.js";
+import { deleteFormfunc, sendFilledFormData } from "./routes/admin/sendFilledFormData.js";
 
 
 const app = express();
@@ -93,6 +94,13 @@ app.put('/api/admin/updateEmployee', (req,res)=>{
 app.post('/api/admin/deleteProfile', (req,res)=>{
     deleteStaffFunc(req,res)
 })
+app.get('/api/admin/getFilledFormData', (req,res)=>{
+    sendFilledFormData(req,res)
+})
+app.post('/api/admin/deleteFilledForms', (req,res)=>{
+    deleteFormfunc(req,res)
+})
+
 
 // test API call
 app.post('/api/test', (req,res)=>{
